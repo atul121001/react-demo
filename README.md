@@ -6,9 +6,40 @@
 
 [Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/react-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
 
-## Finish your CI setup
+## CI/CD Setup ✅
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/ldXYvxcKxj)
+Your GitHub Actions CI/CD pipeline is fully configured! Here's what's included:
+
+### 🚀 CI Workflows
+
+- **Basic CI** (`.github/workflows/ci.yml`): Runs tests, linting, and builds
+- **Advanced CI** (`.github/workflows/ci-advanced.yml`): Includes security scanning, quality checks, and PR previews
+- **Dependabot** (`.github/dependabot.yml`): Automatically updates dependencies weekly
+
+### 🔧 Local CI Commands
+
+Run these commands locally to test your CI pipeline:
+
+```bash
+# Run all CI checks
+npm run ci:all
+
+# Individual CI steps
+npm run ci:format    # Check code formatting
+npm run ci:lint      # Run linting
+npm run ci:test      # Run tests
+npm run ci:build     # Build application
+npm run ci:security  # Security audit
+```
+
+### 📋 What CI Checks
+
+- ✅ **Security**: npm audit for vulnerabilities
+- ✅ **Quality**: Code formatting and linting
+- ✅ **Testing**: Unit tests with coverage
+- ✅ **Building**: Production build verification
+- ✅ **Matrix Testing**: Tests on Node.js 18.x and 20.x
+- ✅ **Artifacts**: Build artifacts uploaded for deployment
 
 
 ## Run tasks

@@ -2,7 +2,16 @@
   "name": "@/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "ci": "nx run-many --target=test,test,test --projects=demo --parallel=3",
+    "ci:check": "nx run-many --target=lint,test,build --projects=demo",
+    "ci:format": "nx format:check",
+    "ci:lint": "nx lint demo",
+    "ci:test": "nx test demo",
+    "ci:build": "nx build demo",
+    "ci:security": "npm audit --audit-level=moderate",
+    "ci:all": "npm run ci:format && npm run ci:lint && npm run ci:test && npm run ci:build && npm run ci:security"
+  },
   "private": true,
   "dependencies": {
     "react": "19.0.0",
