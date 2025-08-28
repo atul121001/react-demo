@@ -14,7 +14,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@acme/ui": ["packages/ui/src/index.ts"],
+      "@acme/remote1": ["module/remote1/src/app/app.tsx"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

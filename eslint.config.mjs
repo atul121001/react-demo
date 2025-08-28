@@ -18,21 +18,45 @@ export default [
         'error',
         {
           enforceBuildableLibDependency: true,
-          allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'],
+          allow: [
+            '^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$',
+            '^@acme/.*'  // Allow @acme path mappings
+          ],
           depConstraints: [
+            // Simplified - rely on custom ESLint rules for import restrictions
+          ],
+        },
+      ],
+    },
+  },
+  // Custom rule: Prevent modules from importing other modules
+  {
+    files: ['**/*.ts', '**/*.tsx'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
             {
-              sourceTag: '*',
-              onlyDependOnLibsWithTags: ['*'],
+              group: ['@acme/remote*'],
+              message: 'Modules cannot import from other modules. Only shell apps can import modules.',
             },
           ],
         },
       ],
     },
   },
+  // Override: Allow shell apps to import modules (disable the restriction)
+  {
+    files: ['apps/**/*.ts', 'apps/**/*.tsx', 'packages/**/*.ts', 'packages/**/*.tsx'],
+    rules: {
+      'no-restricted-imports': 'off',
+    },
+  },
   {
     files: [
       '**/*.ts',
-      '**/*.tsx',
+      '**/*.tsx', 
       '**/*.cts',
       '**/*.mts',
       '**/*.js',

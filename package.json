@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "storybook": "nx storybook ui",
+    "build-storybook": "nx build-storybook ui",
     "ci": "nx run-many --target=test,test,test --projects=demo --parallel=3",
     "ci:check": "nx run-many --target=lint,test,build --projects=demo",
     "ci:format": "nx format:check",
@@ -14,18 +16,26 @@
   },
   "private": true,
   "dependencies": {
+    "@types/lodash": "^4.17.20",
+    "chart.js": "^4.5.0",
+    "lodash": "^4.17.21",
     "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react-dom": "19.0.0",
+    "react-router-dom": "^6.28.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.5",
+    "@babel/preset-react": "^7.14.5",
     "@eslint/js": "^9.8.0",
     "@nx/eslint": "21.3.11",
     "@nx/eslint-plugin": "21.3.11",
-    "@nx/js": "21.3.11",
+    "@nx/js": "21.4.0",
     "@nx/react": "21.3.11",
+    "@nx/storybook": "^21.4.0",
     "@nx/vite": "21.3.11",
-    "@nx/web": "21.3.11",
+    "@nx/web": "21.4.0",
     "@nx/workspace": "21.3.11",
+    "@storybook/react-vite": "9.1.2",
     "@swc-node/register": "~1.9.1",
     "@swc/cli": "~0.6.0",
     "@swc/core": "~1.5.7",
@@ -48,6 +58,8 @@
     "jsdom": "~22.1.0",
     "nx": "21.3.11",
     "prettier": "^2.6.2",
+    "storybook": "9.1.2",
+    "ts-node": "10.9.1",
     "tslib": "^2.3.0",
     "typescript": "~5.8.2",
     "typescript-eslint": "^8.29.0",
@@ -55,6 +67,8 @@
     "vitest": "^3.0.0"
   },
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "packages/*",
+    "module/*"
   ]
 }

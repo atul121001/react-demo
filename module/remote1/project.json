@@ -1,0 +1,10 @@
+{
+  "name": "remote1",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "module/remote1/src",
+  "projectType": "application",
+  "tags": ["scope:module"],
+  "targets": {}
+}
+
+
