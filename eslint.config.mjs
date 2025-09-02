@@ -49,12 +49,7 @@ export default [
   },
   // Override: Allow shell apps to import modules (disable the restriction)
   {
-    files: [
-      'apps/**/*.ts',
-      'apps/**/*.tsx',
-      'libs/**/*.ts',
-      'libs/**/*.tsx',
-    ],
+    files: ['apps/**/*.ts', 'apps/**/*.tsx', 'libs/**/*.ts', 'libs/**/*.tsx'],
     rules: {
       'no-restricted-imports': 'off',
     },

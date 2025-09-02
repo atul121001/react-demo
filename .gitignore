@@ -184,3 +184,5 @@ playwright/.cache/
 .nx/cache
 .nx/workspace-data
 .nx/workspace-dat
+vite.config.*.timestamp*
+vitest.config.*.timestamp*
