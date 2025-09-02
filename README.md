@@ -35,11 +35,10 @@ nx-react/
 │   └── shell/                    # Main container application
 ├── module/
 │   ├── remote1/                  # Permission management microfrontend
-│   └── remote2/                  # Content microfrontend
+│   └── remote2/                  # Content microfrontend with conditional widget
 ├── libs/
 │   └── shared/
-│       ├── ui-components/        # Shared UI components
-│       └── data-access-permissions/ # Permission service
+│       └── common/               # Shared common library with permission service
 ├── scripts/
 │   └── test-nx-cache.ps1        # Nx caching demonstration script
 └── .gitlab-ci.yml               # GitLab CI/CD configuration
@@ -52,15 +51,12 @@ nx-react/
 - **Code splitting** for optimal bundle sizes
 - **Independent deployment** capability for each microfrontend
 
-### 2. Granular Permission System
+### 2. Shared Permission Service
 - **Real-time permission updates** across microfrontends
-- **Section-based access control** for Remote2:
-  - 📊 Dashboard Section
-  - 📈 Analytics Section  
-  - ⚙️ Settings Section
-  - ✏️ Edit Data Section
+- **Conditional widget display** in Remote2 based on permissions
 - **Persistent storage** using localStorage
-- **Cross-microfrontend communication** via custom events
+- **Cross-microfrontend communication** via shared service
+- **Permission controls** in Remote1 affect Remote2 widget visibility
 
 ### 3. Nx Workspace Benefits
 - **Intelligent caching** - Only rebuilds changed projects
@@ -111,7 +107,7 @@ npx nx run-many --target=lint --all
 npx nx lint shell
 ```
 
-## 🎮 Permission System Usage
+## 🎮 Permission Service Usage
 
 ### Testing the Permission Flow
 
@@ -122,27 +118,25 @@ npx nx lint shell
 
 2. **Access Remote1** (Permission Management):
    - Navigate to `http://localhost:4200/remote1`
-   - Use the "Remote2 Section Permissions" controls to toggle access
+   - Use the "Show Widget in Remote2" checkbox to toggle widget visibility
+   - Use the shared Common component permission controls
 
-3. **Test Remote2** (Content Display):
+3. **Test Remote2** (Conditional Widget):
    - Navigate to `http://localhost:4200/remote2`
-   - Watch sections appear/disappear based on permissions
+   - Watch the special widget appear/disappear based on permissions
    - Real-time updates without page refresh
 
 ### Permission Controls
 
 **Remote1 Permission Management:**
-- ✅ **General Access** - Toggle access to entire Remote2 app
-- ✅ **Dashboard Section** - Control dashboard visibility
-- ✅ **Analytics Section** - Control analytics visibility  
-- ✅ **Settings Section** - Control settings visibility
-- ✅ **Edit Data Section** - Control data editing capabilities
+- ✅ **Widget Permission** - Toggle "Show Widget in Remote2" checkbox
+- ✅ **Shared Common Component** - Additional permission controls
+- ✅ **Real-time Status** - See current permission state
 
-**Remote2 Section Display:**
-- 📊 **Dashboard** (Green) - User stats, revenue, sessions
-- 📈 **Analytics** (Yellow) - Performance metrics
-- ⚙️ **Settings** (Blue) - Application configuration
-- ✏️ **Edit Data** (Pink) - Data management tools
+**Remote2 Conditional Display:**
+- 🎯 **Special Widget** (Blue) - Shows when permission is enabled
+- 🚫 **Widget Hidden** (Red) - Shows when permission is disabled
+- 💡 **Instructions** - Clear guidance on how to enable the widget
 
 ## 🏗️ Build & Deployment
 
@@ -198,12 +192,8 @@ This script demonstrates:
 
 ### Shared Libraries
 
-**`@acme/shared/ui-components`**
-- Reusable UI components
-- Storybook integration
-- Consistent design system
-
-**`@acme/shared/data-access-permissions`**
+**`@acme/shared/common`**
+- Shared Common component with permission controls
 - Permission service with singleton pattern
 - localStorage persistence
 - Cross-microfrontend communication
@@ -215,8 +205,7 @@ This script demonstrates:
 {
   "@acme/remote1": ["module/remote1/src/app/app.tsx"],
   "@acme/remote2": ["module/remote2/src/app/app.tsx"],
-  "@acme/shared/ui": ["libs/shared/ui-components/src/index.ts"],
-  "@acme/shared/data-access-permissions": ["libs/shared/data-access-permissions/src/index.ts"]
+  "@acme/shared/common": ["libs/shared/common/src/index.ts"]
 }
 ```
 
@@ -233,10 +222,11 @@ npx nx reset
 npx nx serve shell
 ```
 
-**Permission System Not Working:**
+**Permission Service Not Working:**
 - Check browser console for debugging logs
 - Verify localStorage is enabled
-- Ensure both microfrontends are using the same permission service
+- Ensure both microfrontends are using the same shared common library
+- Check that permission service is properly imported from `@acme/shared/common`
 
 **Build Failures:**
 ```bash
