@@ -1,113 +1,275 @@
-# 
+# Nx React Microfrontend Workspace
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A modern microfrontend architecture built with Nx, React, and Vite, featuring dynamic imports, granular permission-based access control, and optimized CI/CD workflows.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+## 🏗️ Architecture Overview
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/react-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+This workspace implements a **microfrontend architecture** with three main applications:
 
-## CI/CD Setup ✅
+- **Shell App** (`apps/shell`) - Main container application that dynamically loads microfrontends
+- **Remote1** (`module/remote1`) - Permission management microfrontend
+- **Remote2** (`module/remote2`) - Content microfrontend with granular section-based permissions
 
-Your GitHub Actions CI/CD pipeline is fully configured! Here's what's included:
+## 🚀 Quick Start
 
-### 🚀 CI Workflows
+### Prerequisites
+- Node.js 18+ 
+- npm
 
-- **Basic CI** (`.github/workflows/ci.yml`): Runs tests, linting, and builds
-- **Advanced CI** (`.github/workflows/ci-advanced.yml`): Includes security scanning, quality checks, and PR previews
-- **Dependabot** (`.github/dependabot.yml`): Automatically updates dependencies weekly
+### Installation
+```bash
+# Install dependencies
+npm install
 
-### 🔧 Local CI Commands
+# Start the development server
+npx nx serve shell
+```
 
-Run these commands locally to test your CI pipeline:
+The application will be available at `http://localhost:4200/`
+
+## 📁 Project Structure
+
+```
+nx-react/
+├── apps/
+│   └── shell/                    # Main container application
+├── module/
+│   ├── remote1/                  # Permission management microfrontend
+│   └── remote2/                  # Content microfrontend
+├── libs/
+│   └── shared/
+│       ├── ui-components/        # Shared UI components
+│       └── data-access-permissions/ # Permission service
+├── scripts/
+│   └── test-nx-cache.ps1        # Nx caching demonstration script
+└── .gitlab-ci.yml               # GitLab CI/CD configuration
+```
+
+## 🎯 Key Features
+
+### 1. Dynamic Microfrontend Loading
+- **Shell app** dynamically imports Remote1 and Remote2 using React's `lazy()` and `Suspense`
+- **Code splitting** for optimal bundle sizes
+- **Independent deployment** capability for each microfrontend
+
+### 2. Granular Permission System
+- **Real-time permission updates** across microfrontends
+- **Section-based access control** for Remote2:
+  - 📊 Dashboard Section
+  - 📈 Analytics Section  
+  - ⚙️ Settings Section
+  - ✏️ Edit Data Section
+- **Persistent storage** using localStorage
+- **Cross-microfrontend communication** via custom events
+
+### 3. Nx Workspace Benefits
+- **Intelligent caching** - Only rebuilds changed projects
+- **Dependency graph** - Automatic dependency resolution
+- **Monorepo management** - Single repository for all applications
+- **Consistent tooling** - Shared ESLint, TypeScript, and build configurations
+
+## 🔧 Development Commands
+
+### Build Commands
+```bash
+# Build all applications
+npx nx run-many --target=build --projects=shell,remote1,remote2
+
+# Build only shell (includes dependencies)
+npx nx build shell
+
+# Build specific application
+npx nx build remote1
+npx nx build remote2
+```
+
+### Development Commands
+```bash
+# Start shell application
+npx nx serve shell
+
+# Start individual microfrontends
+npx nx serve remote1
+npx nx serve remote2
+```
+
+### Testing Commands
+```bash
+# Test all projects
+npx nx run-many --target=test --all
+
+# Test specific project
+npx nx test shell
+```
+
+### Linting Commands
+```bash
+# Lint all projects
+npx nx run-many --target=lint --all
+
+# Lint specific project
+npx nx lint shell
+```
+
+## 🎮 Permission System Usage
+
+### Testing the Permission Flow
+
+1. **Start the application**:
+   ```bash
+   npx nx serve shell
+   ```
+
+2. **Access Remote1** (Permission Management):
+   - Navigate to `http://localhost:4200/remote1`
+   - Use the "Remote2 Section Permissions" controls to toggle access
+
+3. **Test Remote2** (Content Display):
+   - Navigate to `http://localhost:4200/remote2`
+   - Watch sections appear/disappear based on permissions
+   - Real-time updates without page refresh
+
+### Permission Controls
+
+**Remote1 Permission Management:**
+- ✅ **General Access** - Toggle access to entire Remote2 app
+- ✅ **Dashboard Section** - Control dashboard visibility
+- ✅ **Analytics Section** - Control analytics visibility  
+- ✅ **Settings Section** - Control settings visibility
+- ✅ **Edit Data Section** - Control data editing capabilities
+
+**Remote2 Section Display:**
+- 📊 **Dashboard** (Green) - User stats, revenue, sessions
+- 📈 **Analytics** (Yellow) - Performance metrics
+- ⚙️ **Settings** (Blue) - Application configuration
+- ✏️ **Edit Data** (Pink) - Data management tools
+
+## 🏗️ Build & Deployment
+
+### Single App Deployment (Recommended)
+Deploy only the **shell application** which bundles all dependencies:
 
 ```bash
-# Run all CI checks
-npm run ci:all
+# Build shell (includes all dependencies)
+npx nx build shell
 
-# Individual CI steps
-npm run ci:format    # Check code formatting
-npm run ci:lint      # Run linting
-npm run ci:test      # Run tests
-npm run ci:build     # Build application
-npm run ci:security  # Security audit
+# Deploy dist/shell/ folder
 ```
 
-### 📋 What CI Checks
+### Microfrontend Deployment
+Deploy each microfrontend independently:
 
-- ✅ **Security**: npm audit for vulnerabilities
-- ✅ **Quality**: Code formatting and linting
-- ✅ **Testing**: Unit tests with coverage
-- ✅ **Building**: Production build verification
-- ✅ **Matrix Testing**: Tests on Node.js 18.x and 20.x
-- ✅ **Artifacts**: Build artifacts uploaded for deployment
+```bash
+# Build all applications
+npx nx run-many --target=build --projects=shell,remote1,remote2
 
-
-## Run tasks
-
-To run the dev server for your app, use:
-
-```sh
-npx nx serve demo
+# Deploy each dist/ folder separately
 ```
 
-To create a production bundle:
+## 🚀 CI/CD with GitLab
 
-```sh
-npx nx build demo
+The workspace includes optimized GitLab CI/CD configuration:
+
+### Pipeline Stages
+1. **Build** - Builds shell application and dependencies
+2. **Deploy Preview** - Deploys to staging environment
+3. **Deploy Production** - Deploys to production environment
+
+### Key Features
+- **Nx caching** for faster builds
+- **Single app deployment** strategy
+- **Artifact management** for efficient deployments
+
+## 🧪 Testing Nx Caching
+
+Use the provided PowerShell script to demonstrate Nx's intelligent caching:
+
+```powershell
+# Run the caching demonstration
+.\scripts\test-nx-cache.ps1
 ```
 
-To see all available targets to run for a project, run:
+This script demonstrates:
+- **Initial build** - Builds all projects
+- **Unchanged build** - Uses cache for unchanged projects
+- **Dependency change** - Rebuilds affected projects only
 
-```sh
-npx nx show project demo
+## 📚 Library Structure
+
+### Shared Libraries
+
+**`@acme/shared/ui-components`**
+- Reusable UI components
+- Storybook integration
+- Consistent design system
+
+**`@acme/shared/data-access-permissions`**
+- Permission service with singleton pattern
+- localStorage persistence
+- Cross-microfrontend communication
+- Real-time permission updates
+
+### TypeScript Path Mappings
+
+```json
+{
+  "@acme/remote1": ["module/remote1/src/app/app.tsx"],
+  "@acme/remote2": ["module/remote2/src/app/app.tsx"],
+  "@acme/shared/ui": ["libs/shared/ui-components/src/index.ts"],
+  "@acme/shared/data-access-permissions": ["libs/shared/data-access-permissions/src/index.ts"]
+}
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+## 🔍 Troubleshooting
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### Common Issues
 
-## Add new projects
+**Import Resolution Errors:**
+```bash
+# Clear Nx cache
+npx nx reset
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/react:app demo
+# Restart development server
+npx nx serve shell
 ```
 
-To generate a new library, use:
+**Permission System Not Working:**
+- Check browser console for debugging logs
+- Verify localStorage is enabled
+- Ensure both microfrontends are using the same permission service
 
-```sh
-npx nx g @nx/react:lib mylib
+**Build Failures:**
+```bash
+# Clean and rebuild
+npx nx reset
+npx nx build shell
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+## 🛠️ Technology Stack
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- **Framework**: React 18 with TypeScript
+- **Build Tool**: Vite
+- **Monorepo**: Nx
+- **Styling**: Inline styles (can be extended with CSS-in-JS)
+- **State Management**: Custom permission service with localStorage
+- **CI/CD**: GitLab CI
+- **Package Manager**: npm
 
+## 📖 Additional Resources
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- [Nx Documentation](https://nx.dev)
+- [React Documentation](https://react.dev)
+- [Vite Documentation](https://vitejs.dev)
+- [Microfrontend Architecture Guide](https://micro-frontends.org)
 
-## Install Nx Console
+## 🤝 Contributing
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 📄 License
 
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/react-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+This project is licensed under the MIT License.
