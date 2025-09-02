@@ -6,10 +6,13 @@ const Remote1Routes = lazy(() => import('@acme/remote1').then(module => ({
   default: module.Remote1Routes 
 })));
 
+// Lazy load the Remote2 component
+const Remote2App = lazy(() => import('@acme/remote2'));
+
 function ShellHome() {
   return (
     <div>
-      <h2>🏠 Shell Home - HMR Working!</h2>
+      <h2><span role="img" aria-label="house">🏠</span> Shell Home - HMR Working!</h2>
       <p style={{ color: 'blue', fontWeight: 'bold' }}>
         Shell HMR Update at {new Date().toLocaleTimeString()}
       </p>
@@ -18,8 +21,8 @@ function ShellHome() {
   );
 }
 
-function LoadingFallback() {
-  return <div>Loading Remote1...</div>;
+function LoadingFallback({ remoteName }: { remoteName: string }) {
+  return <div>Loading {remoteName}...</div>;
 }
 
 export default function App() {
@@ -27,7 +30,8 @@ export default function App() {
     <Router>
       <nav style={{ padding: 16, borderBottom: '1px solid #ddd' }}>
         <Link to="/" style={{ marginRight: 16 }}>Home</Link>
-        <Link to="/remote1">Remote1</Link>
+        <Link to="/remote1" style={{ marginRight: 16 }}>Remote1</Link>
+        <Link to="/remote2">Remote2</Link>
       </nav>
       <div style={{ padding: 16 }}>
         <Routes>
@@ -35,8 +39,16 @@ export default function App() {
           <Route 
             path="/remote1/*" 
             element={
-              <Suspense fallback={<LoadingFallback />}>
+              <Suspense fallback={<LoadingFallback remoteName="Remote1" />}>
                 <Remote1Routes />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/remote2" 
+            element={
+              <Suspense fallback={<LoadingFallback remoteName="Remote2" />}>
+                <Remote2App />
               </Suspense>
             } 
           />

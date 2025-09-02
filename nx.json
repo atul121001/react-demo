@@ -16,7 +16,6 @@
     ],
     "sharedGlobals": []
   },
-  "nxCloudId": "689e1dfe9698df6f5480e5df",
   "plugins": [
     {
       "plugin": "@nx/react/router-plugin",
@@ -56,6 +55,12 @@
         "buildStorybookTargetName": "build-storybook",
         "testStorybookTargetName": "test-storybook",
         "staticStorybookTargetName": "static-storybook"
+      }
+    },
+    {
+      "plugin": "@nx/playwright/plugin",
+      "options": {
+        "targetName": "e2e"
       }
     }
   ],

@@ -15,8 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@acme/ui": ["packages/ui/src/index.ts"],
-      "@acme/remote1": ["module/remote1/src/app/app.tsx"]
+      "@acme/remote1": ["module/remote1/src/app/app.tsx"],
+      "@acme/remote2": ["module/remote2/src/app/app.tsx"],
+      "@acme/shared/ui": ["libs/shared/ui-components/src/index.ts"],
+      "@acme/shared/data-access-permissions": ["libs/shared/data-access-permissions/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

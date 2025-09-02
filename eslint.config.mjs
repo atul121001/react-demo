@@ -20,7 +20,7 @@ export default [
           enforceBuildableLibDependency: true,
           allow: [
             '^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$',
-            '^@acme/.*'  // Allow @acme path mappings
+            '^@acme/.*', // Allow @acme path mappings
           ],
           depConstraints: [
             // Simplified - rely on custom ESLint rules for import restrictions
@@ -39,7 +39,8 @@ export default [
           patterns: [
             {
               group: ['@acme/remote*'],
-              message: 'Modules cannot import from other modules. Only shell apps can import modules.',
+              message:
+                'Modules cannot import from other modules. Only shell apps can import modules.',
             },
           ],
         },
@@ -48,7 +49,12 @@ export default [
   },
   // Override: Allow shell apps to import modules (disable the restriction)
   {
-    files: ['apps/**/*.ts', 'apps/**/*.tsx', 'packages/**/*.ts', 'packages/**/*.tsx'],
+    files: [
+      'apps/**/*.ts',
+      'apps/**/*.tsx',
+      'libs/**/*.ts',
+      'libs/**/*.tsx',
+    ],
     rules: {
       'no-restricted-imports': 'off',
     },
@@ -56,7 +62,7 @@ export default [
   {
     files: [
       '**/*.ts',
-      '**/*.tsx', 
+      '**/*.tsx',
       '**/*.cts',
       '**/*.mts',
       '**/*.js',

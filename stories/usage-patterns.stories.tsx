@@ -1,6 +1,6 @@
 import React from 'react';
-import { Hero } from '../packages/ui/src/lib/hero';
-import { Ui } from '../packages/ui/src/lib/ui';
+import { Hero } from '../libs/ui/src/lib/hero';
+import { Ui } from '../libs/ui/src/lib/ui';
 
 export default {
   title: 'Design System/Usage Patterns',

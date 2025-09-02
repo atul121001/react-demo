@@ -1,0 +1,190 @@
+# GitLab CI/CD Configuration - Production Ready
+# Optimized for local Nx caching (no Nx Cloud required)
+
+# Define stages (equivalent to GitHub Actions jobs)
+stages:
+  - security
+  - quality
+  - test
+  - build
+  - deploy
+
+# Global variables
+variables:
+  NODE_VERSION: "20"
+  NPM_CONFIG_CACHE: ".npm"
+  CYPRESS_CACHE_FOLDER: ".cache/Cypress"
+
+# Cache configuration for faster builds
+cache:
+  key: 
+    files:
+      - package-lock.json
+  paths:
+    - node_modules/
+    - .npm/
+    - .cache/
+    - .nx/  # Nx local cache directory
+  policy: pull-push
+
+# Security audit job
+security_audit:
+  stage: security
+  image: node:$NODE_VERSION
+  before_script:
+    - npm ci --cache .npm --prefer-offline
+  script:
+    - npm audit --audit-level=moderate
+  allow_failure: true
+  only:
+    - main
+    - master
+    - merge_requests
+
+# Code quality checks
+quality_check:
+  stage: quality
+  image: node:$NODE_VERSION
+  before_script:
+    - npm ci --cache .npm --prefer-offline
+  script:
+    - echo "Checking code formatting..."
+    - npx nx format:check
+    - echo "Running linting on all projects..."
+    - npx nx run-many --target=lint --projects=shell,remote1,remote2,ui
+  artifacts:
+    reports:
+      junit: reports/lint-results.xml
+    when: always
+  only:
+    - main
+    - master
+    - merge_requests
+
+# Test jobs with matrix (parallel jobs for different Node versions)
+.test_template: &test_template
+  stage: test
+  image: node:$NODE_VERSION
+  before_script:
+    - npm ci --cache .npm --prefer-offline
+  script:
+    - echo "Running tests for all projects..."
+    - npx nx run-many --target=test --projects=shell,remote1,remote2,ui --coverage
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+      junit: reports/test-results.xml
+    paths:
+      - coverage/
+    expire_in: 1 week
+    when: always
+  coverage: '/Lines\s*:\s*(\d+\.\d+)%/'
+
+test_node_18:
+  <<: *test_template
+  image: node:18
+  needs: [security_audit, quality_check]
+
+test_node_20:
+  <<: *test_template
+  image: node:20
+  needs: [security_audit, quality_check]
+
+# Build job - Single App Deployment (shell includes all dependencies)
+build:
+  stage: build
+  image: node:$NODE_VERSION
+  before_script:
+    - npm ci --cache .npm --prefer-offline
+  script:
+    - echo "🔍 Checking what needs to be built..."
+    - npx nx show projects --affected --target=build --base=origin/main --head=HEAD || echo "No affected projects detected"
+    - echo "🏗️ Building shell app (includes all dependencies: remote1, remote2, ui)..."
+    - npx nx build shell --verbose
+    - echo "📊 Build summary:"
+    - npx nx print-affected --target=build --base=origin/main --head=HEAD || echo "No affected analysis available"
+    - echo "✅ Build completed successfully!"
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 30 days
+    reports:
+      # Add build report for cache analysis
+      junit: reports/build-results.xml
+  needs:
+    - test_node_18
+    - test_node_20
+
+# Preview deployment for merge requests
+deploy_preview:
+  stage: deploy
+  image: node:$NODE_VERSION
+  before_script:
+    - npm ci --cache .npm --prefer-offline
+  script:
+    - echo "Deploying preview environment..."
+    - echo "Using pre-built artifacts from build stage (no rebuild needed)..."
+    - echo "Preview deployment completed!"
+    - echo "Shell app available at: preview-shell-$CI_MERGE_REQUEST_IID.example.com"
+    - echo "Remote1 and Remote2 are dynamically loaded by Shell app"
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 7 days
+  environment:
+    name: preview/$CI_MERGE_REQUEST_IID
+    url: https://preview-shell-$CI_MERGE_REQUEST_IID.example.com
+    on_stop: cleanup_preview
+  only:
+    - merge_requests
+  needs: [build]
+
+# Cleanup preview environment
+cleanup_preview:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - echo "Cleaning up preview environment for MR $CI_MERGE_REQUEST_IID"
+  environment:
+    name: preview/$CI_MERGE_REQUEST_IID
+    action: stop
+  when: manual
+  only:
+    - merge_requests
+
+# Production deployment
+deploy_production:
+  stage: deploy
+  image: node:$NODE_VERSION
+  before_script:
+    - npm ci --cache .npm --prefer-offline
+  script:
+    - echo "Deploying to production..."
+    - echo "Using pre-built artifacts from build stage (no rebuild needed)..."
+    - echo "Production deployment completed!"
+    - echo "Shell app deployed to: https://shell.example.com"
+    - echo "Remote1 and Remote2 are dynamically loaded by Shell app"
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 year
+  environment:
+    name: production
+    url: https://shell.example.com
+  only:
+    - main
+    - master
+  when: manual
+  needs: [build]
+
+# Optional: Dependency scanning (GitLab Premium feature)
+dependency_scanning:
+  stage: security
+  needs: []
+  only:
+    - main
+    - master
+    - merge_requests
+  # This will be automatically handled by GitLab if you have Premium/Ultimate
