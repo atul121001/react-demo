@@ -51,7 +51,7 @@ quality_check:
     - echo "Checking code formatting..."
     - npx nx format:check
     - echo "Running linting on all projects..."
-    - npx nx run-many --target=lint --projects=shell,remote1,remote2,ui
+    - npx nx run-many --target=lint --projects=shell,remote1,shared-ui-components,shared-data-access-permissions
   artifacts:
     reports:
       junit: reports/lint-results.xml
@@ -69,7 +69,7 @@ quality_check:
     - npm ci --cache .npm --prefer-offline
   script:
     - echo "Running tests for all projects..."
-    - npx nx run-many --target=test --projects=shell,remote1,remote2,ui --coverage
+    - npx nx run-many --target=test --projects=shell,remote1,shared-ui-components,shared-data-access-permissions --coverage
   artifacts:
     reports:
       coverage_report:
@@ -99,13 +99,13 @@ build:
   before_script:
     - npm ci --cache .npm --prefer-offline
   script:
-    - echo "🔍 Checking what needs to be built..."
+    - echo "Checking what needs to be built..."
     - npx nx show projects --affected --target=build --base=origin/main --head=HEAD || echo "No affected projects detected"
-    - echo "🏗️ Building shell app (includes all dependencies: remote1, remote2, ui)..."
+    - echo "Building shell app (includes all dependencies: remote1, remote2, ui)..."
     - npx nx build shell --verbose
-    - echo "📊 Build summary:"
+    - echo "Build summary:"
     - npx nx print-affected --target=build --base=origin/main --head=HEAD || echo "No affected analysis available"
-    - echo "✅ Build completed successfully!"
+    - echo "Build completed successfully!"
   artifacts:
     paths:
       - dist/
