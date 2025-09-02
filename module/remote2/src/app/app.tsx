@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { permissionService, UserPermissions } from '@acme/shared/data-access-permissions';
+import { DataTable, Chart as HeavyChart, Modal, Form, NotificationContainer, useNotifications, useModal } from '@acme/shared/ui-components';
 
 export default function App() {
   const [permissions, setPermissions] = useState<UserPermissions>(permissionService.getPermissions());
   const [hasAccess, setHasAccess] = useState(permissions.canAccessRemote2);
+  const { notifications, addNotification, removeNotification } = useNotifications();
+  const { open, close, isOpen } = useModal();
 
   useEffect(() => {
     console.log('Remote2: Setting up permission subscription');
@@ -102,6 +105,21 @@ export default function App() {
               <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#15803d' }}>$12,345</p>
             </div>
           </div>
+          
+          {/* Add Heavy Chart to Dashboard */}
+          <div style={{ marginTop: '20px' }}>
+            <HeavyChart
+              type="bar"
+              data={[
+                { label: 'Q1', value: 1200 },
+                { label: 'Q2', value: 1900 },
+                { label: 'Q3', value: 3000 },
+                { label: 'Q4', value: 2800 }
+              ]}
+              width={600}
+              height={300}
+            />
+          </div>
         </div>
       )}
 
@@ -134,6 +152,23 @@ export default function App() {
                 <strong style={{ color: '#92400e' }}>4.5%</strong>
               </div>
             </div>
+          </div>
+          
+          {/* Add DataTable to Analytics */}
+          <div style={{ marginTop: '20px' }}>
+            <DataTable
+              data={[
+                { id: 1, metric: 'Page Views', value: '45,678', trend: '+12%' },
+                { id: 2, metric: 'Unique Visitors', value: '23,456', trend: '+8%' },
+                { id: 3, metric: 'Session Duration', value: '3m 45s', trend: '+5%' },
+                { id: 4, metric: 'Conversion Rate', value: '4.5%', trend: '+2%' }
+              ]}
+              columns={[
+                { key: 'metric', title: 'Metric' },
+                { key: 'value', title: 'Value' },
+                { key: 'trend', title: 'Trend' }
+              ]}
+            />
           </div>
         </div>
       )}
@@ -285,6 +320,12 @@ export default function App() {
           </div>
         </div>
       </div>
+      
+      {/* Notification Container */}
+      <NotificationContainer 
+        notifications={notifications} 
+        onClose={removeNotification} 
+      />
     </div>
   );
 }

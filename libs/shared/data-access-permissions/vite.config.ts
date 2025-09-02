@@ -3,14 +3,14 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
 export default defineConfig({
   root: __dirname,
-  cacheDir: '../../node_modules/.vite/libs/services/permissions',
+  cacheDir: '../../node_modules/.vite/shared-data-access-permissions',
 
   plugins: [
     nxViteTsPaths(),
   ],
 
   build: {
-    outDir: '../../dist/libs/services/permissions',
+    outDir: 'dist',
     reportCompressedSize: true,
     commonjsOptions: {
       transformMixedEsModules: true,
@@ -34,7 +34,7 @@ export default defineConfig({
     environment: 'jsdom',
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     coverage: {
-      reportsDirectory: '../../coverage/libs/services/permissions',
+      reportsDirectory: '../../coverage/libs/shared/data-access-permissions',
     },
   },
 });

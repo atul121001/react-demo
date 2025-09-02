@@ -2,9 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 
 // Lazy load the Remote1Routes component
-const Remote1Routes = lazy(() => import('@acme/remote1').then(module => ({ 
-  default: module.Remote1Routes 
-})));
+const Remote1Routes = lazy(() => import('@acme/remote1'));
 
 // Lazy load the Remote2 component
 const Remote2App = lazy(() => import('@acme/remote2'));

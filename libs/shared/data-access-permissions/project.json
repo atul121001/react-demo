@@ -8,7 +8,7 @@
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/services/permissions"
+        "outputPath": "libs/shared/data-access-permissions/dist"
       }
     },
     "test": {
@@ -16,14 +16,14 @@
       "outputs": ["{options.reportsDirectory}"],
       "options": {
         "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/libs/services/permissions"
+        "reportsDirectory": "../../coverage/libs/shared/data-access-permissions"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/services/permissions/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["libs/shared/data-access-permissions/**/*.{ts,tsx,js,jsx}"]
       }
     }
   },
